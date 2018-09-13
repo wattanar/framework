@@ -4,7 +4,8 @@
   <legend>Capabilities</legend>
 
   <p>
-    <button class="btn btn-primary" id="new_capabilities">Create new</button>
+    <button class="btn btn-primary" id="new_capabilities">New Capability</button>
+    <button class="btn btn-danger" id="delete_capabilities">Delete Capability</button>
   </p>
   <p>
     <div id="grid"></div>
@@ -63,53 +64,70 @@
       $('#cap_slug').val($('#cap_name').val().toLowerCase().replace(/[\s-'.@#\\/+=*%&!$?)({}]/g, "_"));
     });
 
-    function grid() {
-      var dataAdapter = new $.jqx.dataAdapter({
-        datatype: 'json',
-        datafields: [
-          { name: 'id', type: 'number' },
-          { name: 'cap_slug', type: 'string' },
-          { name: 'cap_name', type: 'string' },
-          { name: 'cap_status', type: 'bool' }
-        ],
-        url: '/api/v1/capabilities',
-        updaterow: function (rowid, rowdata, commit) {
-          __http('post', '/api/v1/capabilities/edit', {
-            id: rowdata.id,
-            slug: rowdata.cap_slug,
-            name: rowdata.cap_name,
-            status: rowdata.cap_status
-          }).done(function (data) {
-            if (data.result === true) {
-              commit(true);
-            } else {
-              alert(data.message);
-              commit(false);
-            }
-          });
-        }
-      });
-
-      return $("#grid").jqxGrid({
-        width: '100%',
-        source: dataAdapter,
-        autoheight: true,
-        pageSize: 10,
-        altrows: true,
-        pageable: true,
-        sortable: true,
-        filterable: true,
-        showfilterrow: true,
-        columnsresize: true,
-        editable: true,
-        theme: 'default',
-        columns: [
-          { text: 'Slug', datafield: 'cap_slug', width: 200 },
-          { text: 'Name', datafield: 'cap_name', width: 300 },
-          { text: 'Status', datafield: 'cap_status', columntype: 'checkbox', filtertype: 'bool', width: 100 }
-        ]
-      });
-    }
+    $('#delete_capabilities').on('click', function () {
+      var rowdata = row_selected('#grid');
+      if (typeof rowdata !== 'undefined') {
+        __http('post', '/api/v1/capabilities/delete', {
+          cap_id: rowdata.id
+        }).done(function (data) {
+          if (data.result === true) {
+            $('#grid').jqxGrid('updatebounddata');
+          } else {
+            alert(data.message);
+          }
+        });
+      } else {
+        alert('Please select row!');
+      }
+    });
   });
+
+  function grid() {
+    var dataAdapter = new $.jqx.dataAdapter({
+      datatype: 'json',
+      datafields: [
+        { name: 'id', type: 'number' },
+        { name: 'cap_slug', type: 'string' },
+        { name: 'cap_name', type: 'string' },
+        { name: 'cap_status', type: 'bool' }
+      ],
+      url: '/api/v1/capabilities',
+      updaterow: function (rowid, rowdata, commit) {
+        __http('post', '/api/v1/capabilities/edit', {
+          id: rowdata.id,
+          slug: rowdata.cap_slug,
+          name: rowdata.cap_name,
+          status: rowdata.cap_status
+        }).done(function (data) {
+          if (data.result === true) {
+            commit(true);
+          } else {
+            alert(data.message);
+            commit(false);
+          }
+        });
+      }
+    });
+
+    return $("#grid").jqxGrid({
+      width: '100%',
+      source: dataAdapter,
+      autoheight: true,
+      pageSize: 10,
+      altrows: true,
+      pageable: true,
+      sortable: true,
+      filterable: true,
+      showfilterrow: true,
+      columnsresize: true,
+      editable: true,
+      theme: 'default',
+      columns: [
+        { text: 'Slug', datafield: 'cap_slug', width: 200, editable: false },
+        { text: 'Name', datafield: 'cap_name', width: 300 },
+        { text: 'Status', datafield: 'cap_status', columntype: 'checkbox', filtertype: 'bool', width: 100 }
+      ]
+    });
+  }
 </script>
 <?php $this->end() ?>

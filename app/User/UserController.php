@@ -19,7 +19,7 @@ class UserController
     $this->user = new UserAPI;
   }
 
-  public function userProfile() {
+  public function userProfile($request, $response, $args) {
     
     $csrf = CSRF::generate();
 
@@ -33,7 +33,7 @@ class UserController
     ]);
   }
 
-  public function userChangePassword() {
+  public function userChangePassword($request, $response, $args) {
     
     $csrf = CSRF::generate();
 
@@ -44,7 +44,7 @@ class UserController
     ]);
   }
 
-  public function userLogin() {
+  public function userLogin($request, $response, $args) {
     
     $csrf = CSRF::generate();
 
@@ -160,7 +160,7 @@ class UserController
     }
   }
 
-  public function roles() {
+  public function roles($request, $response, $args) {
     return Render::View('pages/users/roles');
   }
 
@@ -184,16 +184,14 @@ class UserController
 
     $parsedBody = $request->getParsedBody();
 
-    if (trim($parsedBody['role_slug']) === '' ||
-        trim($parsedBody['role_name']) === '') {
+    if (trim($parsedBody['role_name']) === '') {
           return $response->withJson([
             'result' => false,
-            'message' => 'data incorrect'
+            'message' => 'Unable to create role!'
           ]);
     }
 
     $create = $this->user->createRoles(
-      $parsedBody['role_slug'], 
       $parsedBody['role_name']
     );
 
@@ -214,11 +212,10 @@ class UserController
 
     $parsedBody = $request->getParsedBody();
 
-    if (trim($parsedBody['cap_slug']) === '' ||
-        trim($parsedBody['cap_name']) === '') {
+    if (trim($parsedBody['cap_slug']) === '' || trim($parsedBody['cap_name']) === '') {
           return $response->withJson([
             'result' => false,
-            'message' => 'data incorrect'
+            'message' => 'Unable to create capability!'
           ]);
     }
 
@@ -243,8 +240,7 @@ class UserController
   public function editRoles($request, $response, $args) {
     $parsedBody = $request->getParsedBody();
 
-    if (trim($parsedBody['slug']) === '' ||
-        trim($parsedBody['name']) === '') {
+    if (trim($parsedBody['name']) === '') {
           return $response->withJson([
             'result' => false,
             'message' => 'Data incorrect!'
@@ -253,7 +249,6 @@ class UserController
 
     $update = $this->user->editRoles(
       $parsedBody['id'],
-      strtolower($parsedBody['slug']), 
       $parsedBody['name'],
       $parsedBody['status']
     );
@@ -261,7 +256,7 @@ class UserController
     if ($update['result'] === true) {
       return $response->withJson([
         'result' => true,
-        'message' => 'edit role successful!'
+        'message' => $update['message']
       ]);
     } else {
       return $response->withJson([
@@ -302,11 +297,11 @@ class UserController
     }
   }
 
-  public function capabilities() {
+  public function capabilities($request, $response, $args) {
     return Render::View('pages/users/capabilities');
   }
 
-  public function allUsers() {
+  public function allUsers($request, $response, $args) {
     return Render::View('pages/users/users');
   }
 
@@ -385,7 +380,15 @@ class UserController
   }
 
   public function updateCapabilities($request, $response, $args) {
+
     $parsedBody = $request->getParsedBody();
+
+    if ( Validate::clean($parsedBody['role_id']) === null || $parsedBody['cap_id'] === '') {
+      return $response->withJson([
+        'result' => false,
+        'message' => 'Unable to update!'
+      ]);
+    }
 
     $update = $this->user->updateCapabilities(
       $parsedBody['role_id'],
@@ -395,12 +398,12 @@ class UserController
     if ($update['result'] === false) {
       return $response->withJson([
         'result' => false,
-        'message' => $create['message']
+        'message' => $update['message']
       ]);
     } else {
       return $response->withJson([
         'result' => true,
-        'message' => 'Update successful!'
+        'message' => $update['message']
       ]);
     }
   }
@@ -415,5 +418,47 @@ class UserController
 
   public function unauthorizePage($request, $response, $args) {
     return Render::View('pages/users/401');
+  }
+
+  public function deleteCapabilities($request, $response, $args) {
+
+    $parsedBody = $request->getParsedBody();
+    
+    $delete = $this->user->deleteCapabilities(
+      $parsedBody['cap_id']
+    );
+
+    if ($delete['result'] === false) {
+      return $response->withJson([
+        'result' => false,
+        'message' => $delete['message']
+      ]);
+    } else {
+      return $response->withJson([
+        'result' => true,
+        'message' => $delete['message']
+      ]);
+    }
+  }
+
+  public function deleteRoles($request, $response, $args) {
+
+    $parsedBody = $request->getParsedBody();
+
+    $delete = $this->user->deleteRoles(
+      $parsedBody['role_id']
+    );
+
+    if ($delete['result'] === false) {
+      return $response->withJson([
+        'result' => false,
+        'message' => $delete['message']
+      ]);
+    } else {
+      return $response->withJson([
+        'result' => true,
+        'message' => $delete['message']
+      ]);
+    }
   }
 }

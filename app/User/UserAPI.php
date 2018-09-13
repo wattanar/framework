@@ -147,7 +147,6 @@ class UserAPI
       $this->db,
       "SELECT 
       id,
-      role_slug,
       role_name,
       role_status
       FROM web_roles"
@@ -160,7 +159,6 @@ class UserAPI
       $this->db,
       "SELECT 
       id,
-      role_slug,
       role_name,
       role_status
       FROM web_roles
@@ -193,34 +191,15 @@ class UserAPI
     );
   }
 
-  public function createRoles($slug, $name) {
-
-    $checkSlug = Database::hasRows(
-      $this->db,
-      "SELECT role_slug
-      FROM web_roles
-      WHERE role_slug = ?",
-      [
-        $slug
-      ]
-    );
-
-    if ( $checkSlug === true ) {
-      return [
-        'result' => false,
-        'message' => 'Role slug is already exists!'
-      ];
-    }
+  public function createRoles($name) {
 
     $create = Database::query(
       $this->db,
       "INSERT INTO web_roles(
-        role_slug,
         role_name,
         role_status
-      ) VALUES(?, ?, ?)",
+      ) VALUES(?, ?)",
       [
-        $slug,
         $name,
         1
       ]
@@ -285,26 +264,7 @@ class UserAPI
     }
   }
 
-  public function editRoles($id, $slug, $name, $status) {
-
-    $checkSlug = Database::hasRows(
-      $this->db,
-      "SELECT role_slug
-      FROM web_roles
-      WHERE role_slug = ?
-      AND id <> ?",
-      [
-        $slug,
-        $id
-      ]
-    );
-
-    if ( $checkSlug === true ) {
-      return [
-        'result' => false,
-        'message' => 'Role slug is already exists!'
-      ];
-    }
+  public function editRoles($id, $name, $status) {
 
     if ((string)$status === 'true') {
       $_status = 1;
@@ -315,12 +275,10 @@ class UserAPI
     $update = Database::query(
       $this->db,
       "UPDATE web_roles
-      SET role_slug = ?,
-      role_name = ?,
+      SET role_name = ?,
       role_status = ?
       WHERE id = ?",
       [
-        $slug,
         $name,
         $_status,
         $id
@@ -616,20 +574,84 @@ class UserAPI
     );
   }
 
-  public function accessPage($role, $uri) {
-    $cap_id = (array)self::getCapabilitiesByRoles($role);
+  public function deleteCapabilities($cap_id) {
 
-    $access = $this->menu->allow($uri, $cap_id);
+    $isRoleUsing = Database::hasRows(
+      $this->db,
+      "SELECT P.role_id
+      FROM web_permissions P
+      WHERE P.cap_id = ?",
+      [
+        $cap_id
+      ]
+    );
 
-    if ( $access['result'] === true ) {
+    if ( $isRoleUsing === true ) {
+      return [
+        'result' => false,
+        'message' => 'Capability in use!'
+      ];
+    }
+
+    $deleteCap = Database::query(
+      $this->db,
+      "DELETE FROM web_capabilities
+      WHERE id = ?",
+      [
+        $cap_id
+      ]
+    );
+
+    if ( $deleteCap ) {
       return [
         'result' => true,
-        'message' => 'Passed!'
+        'message' => 'Capability deleted!'
       ];
     } else {
       return [
         'result' => false,
-        'message' => 'Nope!'
+        'message' => 'Capability unable to delete!'
+      ];
+    }
+  }
+
+  public function deleteRoles($role_id) {
+
+    $isRoleUsing = Database::hasRows(
+      $this->db,
+      "SELECT U.user_role
+      FROM web_users U
+      WHERE U.user_role = ?",
+      [
+        $role_id
+      ]
+    );
+
+    if ( $isRoleUsing === true ) {
+      return [
+        'result' => false,
+        'message' => 'Role in use!'
+      ];
+    }
+
+    $deleteRole = Database::query(
+      $this->db,
+      "DELETE FROM web_roles
+      WHERE id = ?",
+      [
+        $role_id
+      ]
+    );
+
+    if ( $deleteRole ) {
+      return [
+        'result' => true,
+        'message' => 'Role deleted!'
+      ];
+    } else {
+      return [
+        'result' => false,
+        'message' => 'Role unable to delete!'
       ];
     }
   }

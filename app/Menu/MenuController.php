@@ -14,7 +14,7 @@ class MenuController
     $this->menu = new MenuAPI;
   }
 
-  public function index() {
+  public function index($request, $response, $args) {
     return Render::View('pages/menu/menu');
   }
 
@@ -67,6 +67,31 @@ class MenuController
         'message' => $update['message']
       ]);
     }
+  }
+
+  public function generateMenuHTML() : string {
+    $roots = $this->menu->generateMenu('root');
+
+    $menu = [];
+
+    foreach ($roots as $v) {
+      $menu[] = [
+        'id' => $v['id'],
+        'link' => $v['menu_link'],
+        'name' => $v['menu_name'],
+        'sub' => $this->menu->generateMenu('sub', $v['id'])
+      ];
+    }
+
+    $menu_generated = '';
+
+    $menu_generated = self::getMenuChild($menu);
+
+    return $menu_generated;
+  }
+
+  public function getMenuChild($menu) : string {
+
   }
 
   public function generateMenu() : string {
@@ -173,31 +198,22 @@ class MenuController
     return $menu_generated;
   }
 
-  public function updateCapabilities($request, $response, $args) {
-    
+  public function deleteMenu($request, $response, $args) {
     $parsedBody = $request->getParsedBody();
 
-    if ( Validate::clean($parsedBody['cap_id']) === null ) {
-      return $response->withJson([
-        'result' => false,
-        'message' => 'Please select capabilities!'
-      ]);
-    }
-
-    $update = $this->menu->updateCapabilities(
-      Validate::clean($parsedBody['menu_id']),
-      Validate::clean($parsedBody['cap_id'])
+    $delete = $this->menu->deleteMenu(
+      Validate::clean($parsedBody['id'])
     );
 
-    if ($update['result'] === false) {
+    if ($delete['result'] === false) {
       return $response->withJson([
         'result' => false,
-        'message' => $update['message']
+        'message' => $delete['message']
       ]);
     } else {
       return $response->withJson([
         'result' => true,
-        'message' => $update['message']
+        'message' => $delete['message']
       ]);
     }
   }

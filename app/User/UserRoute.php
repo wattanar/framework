@@ -33,6 +33,7 @@ $app->group('/api/v1', function() use ($auth, $app) {
   $app->get('/roles_active', 'App\User\UserController:getRolesActive')->add($auth);
   $app->post('/roles/create', 'App\User\UserController:createRoles')->add($auth);
   $app->post('/roles/edit', 'App\User\UserController:editRoles')->add($auth);
+  $app->post('/roles/delete', 'App\User\UserController:deleteRoles')->add($auth);
   $app->post('/roles/update_capabilities', 'App\User\UserController:updateCapabilities')->add($auth);
   $app->get('/roles/capabilities_by_role/{role_id}', 'App\User\UserController:getCapabilitiesByRoles')->add($auth);
 
@@ -40,6 +41,7 @@ $app->group('/api/v1', function() use ($auth, $app) {
   $app->get('/capabilities_active', 'App\User\UserController:getCapabilitiesActive')->add($auth);
   $app->post('/capabilities/create', 'App\User\UserController:createCapabilities')->add($auth);
   $app->post('/capabilities/edit', 'App\User\UserController:editCapabilities')->add($auth);
+  $app->post('/capabilities/delete', 'App\User\UserController:deleteCapabilities')->add($auth);
 
   $app->get('/users', 'App\User\UserController:getAllUsers')->add($auth);
   $app->post('/users/create', 'App\User\UserController:createUser')->add($auth);

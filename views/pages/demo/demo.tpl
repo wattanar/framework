@@ -3,6 +3,7 @@
 <div>
   <legend>This is title!</legend>
   <p>
+    <button class="btn btn-primary">Click!</button>
     Content here!
   </p>
 </div>

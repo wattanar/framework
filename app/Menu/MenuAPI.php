@@ -22,13 +22,9 @@ class MenuAPI
       M.menu_position,
       M.menu_parent,
       M.menu_order,
-      M.menu_status,
-      C.cap_name,
-      C.id AS cap_id
+      M.menu_status
       FROM web_menus M
-      LEFT JOIN web_capabilities C
-      ON C.id = M.menu_capabilities
-      ORDER BY id ASC"
+      ORDER BY M.id ASC"
     );
   }
 
@@ -166,77 +162,26 @@ class MenuAPI
     }
   }
 
-  public function updateCapabilities($menu_id, $cap_id) {
+  public function deleteMenu($menu_id) {
 
-    $update = Database::query(
+    $delete = Database::query(
       $this->db,
-      "UPDATE web_menus
-      SET menu_capabilities = ?
+      "DELETE FROM web_menus
       WHERE id = ?",
       [
-        $cap_id,
         $menu_id
       ]
     );
 
-    if ( $update ) {
+    if ( $delete ) {
       return [
         'result' => true,
-        'message' => 'Update successful!'
+        'message' => 'Delete successful!'
       ];
     } else {
       return [
         'result' => false,
-        'message' => 'Update Failed!'
-      ];
-    }
-  }
-
-  public function allow($uri, $cap_id) : array {
-    
-    $isExists = Database::hasRows(
-      $this->db,
-      "SELECT menu_link
-      FROM web_menus
-      WHERE menu_link = ?
-      AND menu_status <> 0",
-      [
-        $uri
-      ]
-    );
-
-    if ( $isExists === false ) {
-      return [
-        'result' => false,
-        'message' => 'Uri not found.'
-      ];
-    }
-
-    $menu_ = Database::rows(
-      $this->db,
-      "SELECT
-      menu_link,
-      menu_capabilities,
-      menu_status
-      FROM web_menus"
-    );
-
-    if ( (int)$menu_[0]['menu_capabilities'] === 0 ) {
-      return [
-        'result' => true,
-        'message' => 'Uri not set capability!'
-      ];
-    }
-
-    if ( in_array($menu_[0]['menu_capabilities'], $cap_id) === true ) {
-      return [
-        'result' => true,
-        'message' => 'Uri matched!'
-      ];
-    } else {
-      return [
-        'result' => false,
-        'message' => 'Uri not match!'
+        'message' => 'Delete Failed!'
       ];
     }
   }
