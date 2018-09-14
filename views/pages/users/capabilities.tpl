@@ -95,12 +95,13 @@
       updaterow: function (rowid, rowdata, commit) {
         __http('post', '/api/v1/capabilities/edit', {
           id: rowdata.id,
-          slug: rowdata.cap_slug,
+          slug: rowdata.cap_name.toLowerCase().replace(/[\s-'.@#\\/+=*%&!$?)({}]/g, "_"),
           name: rowdata.cap_name,
           status: rowdata.cap_status
         }).done(function (data) {
           if (data.result === true) {
             commit(true);
+            $('#grid').jqxGrid('updatebounddata');
           } else {
             alert(data.message);
             commit(false);
