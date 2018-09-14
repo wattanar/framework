@@ -2,13 +2,13 @@
 
 // Delete this file after installed!
 
-$user = 'admin';
-$pass = 'admin';
+$user = '';
+$pass = '';
 
-$db_name = "test";
-$db_user = "test";
-$db_pass = "test";
-$db_host = "test";
+$db_name = "";
+$db_user = "";
+$db_pass = "";
+$db_host = "";
 
 $settings = [
   "Database" => $db_name, 
