@@ -8,9 +8,6 @@
   <p>
     <a href="<?php echo APP_ROOT;?>">Go back</a>
   </p>
-  <p>
-    <?php echo $_SESSION['route_path']; ?>
-  </p>
 </div>
 
 <?php $this->push('scripts') ?>

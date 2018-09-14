@@ -1,9 +1,9 @@
 <?php
 
-use App\User\UserAPI;
+use App\Auth\AuthAPI;
 
-$user = new UserAPI;
-$token = $user->verifyToken();
+$auth = new AuthAPI;
+$user_data = $auth->verifyToken();
 
 if( !isset($home_url) ) $home_url = '/';?>
 <!DOCTYPE html>
@@ -50,7 +50,7 @@ if( !isset($home_url) ) $home_url = '/';?>
       </div>
       <div class="collapse navbar-collapse">
         <?php 
-          if ( $token['result'] === true) {
+          if ( $user_data['result'] === true) {
             $this->insert('includes/navbar-left');
             $this->insert('includes/navbar-right'); 
           }

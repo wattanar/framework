@@ -1,10 +1,10 @@
 <?php 
 
-use App\User\UserAPI;
+use App\Auth\AuthAPI;
 
-$user = new UserAPI;
+$auth = new AuthAPI;
 
-$user_data = $user->verifyToken(); ?>
+$user_data = $auth->verifyToken(); ?>
 
 <ul class="nav navbar-nav navbar-right">
   <li>

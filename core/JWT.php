@@ -18,7 +18,7 @@ class JWT
 		return FirebaseJWT::encode($data, APP_KEY);
 	}
 
-	public static function validateToken($token) {
+	public static function verifyToken($token) {
 
 		try {
 			$payload = (array)FirebaseJWT::decode($token, APP_KEY, array('HS256'));

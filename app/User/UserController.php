@@ -10,6 +10,7 @@ use Core\Flash;
 use Core\Response;
 use Core\Validate;
 use App\User\UserAPI;
+use App\Auth\AuthAPI;
 
 class UserController
 {
@@ -17,13 +18,14 @@ class UserController
 
   public function __construct() {
     $this->user = new UserAPI;
+    $this->auth = new AuthAPI;
   }
 
   public function userProfile($request, $response, $args) {
     
     $csrf = CSRF::generate();
 
-    $user_login = $this->user->verifyToken();
+    $user_login = $this->auth->verifyToken();
 
     return Render::View('/pages/users/profile', [
       'name' => $csrf['name'],
@@ -98,14 +100,14 @@ class UserController
   }
 
   public function verifyToken() {
-    return $response->withJson($this->user->verifyToken());
+    return $response->withJson($this->auth->verifyToken());
   }
 
   public function userUpdatePassword($request, $response, $args) {
     
     $parsedBody = $request->getParsedBody();
 
-    $user_data = $this->user->verifyToken();
+    $user_data = $this->auth->verifyToken();
 
     $checkOldPass = $this->user->userAuth(
       $user_data['payload']['user_data']->username, 
@@ -333,7 +335,7 @@ class UserController
 
     $parsedBody = $request->getParsedBody();
 
-    $user_data = $this->user->verifyToken();
+    $user_data = $this->auth->verifyToken();
 
     if ( $user_data['result'] === false ) {
       return Response::result(false, "You're not authorize!");

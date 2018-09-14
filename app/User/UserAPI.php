@@ -60,19 +60,6 @@ class UserAPI
     );
   }
 
-  public function verifyToken() {
-
-    if ( !isset($_COOKIE[TOKEN_NAME]) )  {
-      return [
-				'result' => false,
-				'message' => 'token invalid',
-				'payload' => []
-			];
-    }
-
-    return JWT::validateToken($_COOKIE[TOKEN_NAME]);
-  }
-
   public function updatePassword($username, $new_pass) {
 
     if ( trim($new_pass) === '' ) {
