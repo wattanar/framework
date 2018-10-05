@@ -146,9 +146,52 @@
         },
         { text: 'Parent', datafield: 'menu_parent', width: 100, cellsalign: 'center' },
         { text: 'Order', datafield: 'menu_order', width: 100, cellsalign: 'center' },
+        {
+          text: 'Capabilities', datafield: 'cap_name', cellsrenderer: function (row, column, value) {
+            return "<div class='inner-grid'><button class='btn-inner-grid' onclick='return updateCapabilities()'> Update </button> " + value + "</div>";
+          }, width: 200, editable: false
+        },
         { text: 'Status', datafield: 'menu_status', width: 100, columntype: 'checkbox', filtertype: 'bool' }
       ]
     });
+  }
+
+  function updateCapabilities() {
+    var rowdata = row_selected('#grid');
+    $('#dialog_update_capabilities').dialog({
+      modal: true,
+      resizable: false,
+      height: "auto",
+      width: 400,
+      buttons: {
+        "Submit": function () {
+          __http('post', '/api/v1/menu/update_capabilities', {
+            menu_id: rowdata.id,
+            cap_id: $('#capabilities').val(),
+          }).done(function (data) {
+            if (data.result === true) {
+              $('#dialog_update_capabilities').dialog('close');
+              $('#formUpdateCapabilities').trigger('reset');
+              $('#grid').jqxGrid('updatebounddata');
+            } else {
+              $('#formUpdateCapabilities').trigger('reset');
+              alert(data.message);
+            }
+          });
+        }
+      }
+    });
+    __http('get', '/api/v1/capabilities_active')
+      .done(function (data) {
+        $('#capabilities').html("");
+        $('#capabilities').append('<option value="0">None</option>');
+        $.each(data, function (i, v) {
+          $('#capabilities')
+            .append(new Option(v.cap_name, v.id, false, true))
+            .trigger('change');
+        });
+        $('#capabilities').val(rowdata.cap_id).select2();
+      });
   }
 
 </script>

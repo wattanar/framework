@@ -3,7 +3,6 @@
 namespace App\Auth;
 
 use Core\JWT;
-use Core\Render;
 use Core\Database;
 
 class AuthAPI 
@@ -25,20 +24,36 @@ class AuthAPI
     return JWT::verifyToken($_COOKIE[TOKEN_NAME]);
   }
 
-  public function accessPage($cap_slug) {
-    
-    $user_data = self::verifyToken();
+  public function accessPage($role_id, $cap_id = null) {
 
-    if ( $user_data['result'] === false ) {
-      return [
-        'result' => false,
-        'message' => 'Please login!'
-      ];
+    if ($cap_id === null) {
+      $currentUrl = APP_ROOT . $_SERVER['REQUEST_URI'];
+
+      if ($currentUrl === '') $currentUrl = '/';
+
+      $getCapByMenuLink = Database::rows(
+        $this->db,
+        "SELECT TOP 1 menu_capabilities 
+        FROM web_menus
+        WHERE menu_link = ?",
+        [
+          trim($currentUrl)
+        ]
+      );
+
+      if ( count($getCapByMenuLink) === 0 ) {
+        return [
+          'result' => false,
+          'message' => 'Not passed!'
+        ];
+      }
+
+      $cap_id = $getCapByMenuLink[0]['menu_capabilities'];
     }
-
+    
     $checkCap = self::checkCapByRole(
-      $user_data['payload']['user_data']->role, 
-      $cap_slug
+      $role_id, 
+      $cap_id
     );
 
     if ($checkCap === true) {
@@ -62,7 +77,7 @@ class AuthAPI
       FROM web_permissions P
       LEFT JOIN web_capabilities C
       ON P.cap_id = C.id
-      WHERE C.cap_slug = ?
+      WHERE C.id = ?
       AND P.role_id = ?",
       [
         $cap_slug,

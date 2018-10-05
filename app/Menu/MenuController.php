@@ -217,4 +217,30 @@ class MenuController
       ]);
     }
   }
+
+  public function updateCapabilities($request, $response, $args) {
+    
+    $parsedBody = $request->getParsedBody();
+    if ( Validate::clean($parsedBody['cap_id']) === null ) {
+      return $response->withJson([
+        'result' => false,
+        'message' => 'Please select capabilities!'
+      ]);
+    }
+    $update = $this->menu->updateCapabilities(
+      Validate::clean($parsedBody['menu_id']),
+      Validate::clean($parsedBody['cap_id'])
+    );
+    if ($update['result'] === false) {
+      return $response->withJson([
+        'result' => false,
+        'message' => $update['message']
+      ]);
+    } else {
+      return $response->withJson([
+        'result' => true,
+        'message' => $update['message']
+      ]);
+    }
+  }
 }

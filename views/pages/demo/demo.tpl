@@ -2,9 +2,12 @@
 
 <div>
   <legend>This is title!</legend>
+
   <p>
     This is content.
   </p>
+
+  <button>Click Me</button>
 </div>
 
 <?php $this->push('scripts') ?>

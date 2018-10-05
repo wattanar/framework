@@ -2,4 +2,4 @@
 
 $app->get('/', 'App\Landing\LandingController:demo')
   ->add($auth)
-  ->add($access('cap_1'));
+  ->add($accessPage);

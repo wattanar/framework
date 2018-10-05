@@ -16,19 +16,27 @@ $auth = function ($request, $response, $next) use ($authUser) {
 		Flash::addMessage('error', 'Please login!');
 		return $response->withRedirect('/user/login', 301);
 	}
+
+	// check use can access this page.
+	// $userCanAccess = $authUser->accessPage($token['payload']['user_data']->role);
+
 	return $next($request, $response);
 };
 
-// Check capability for access this url
-$access = function ($cap_slug) use ($authUser) {
-	return function ($request, $response, $next) use ($cap_slug, $authUser) {
+$accessPage = function($request, $response, $next) use ($authUser) {
 
-		$checkCap = $authUser->accessPage($cap_slug);
+	$token = $authUser->verifyToken();
 
-		if ($checkCap['result'] === false) {
-			return $response->withRedirect('/user/unauthorize', 301);
-		} else {
-			return $next($request, $response);
-		}
-	};
+	if ( $token['result'] === false ) {
+		Flash::addMessage('error', 'Please login!');
+		return $response->withRedirect('/user/login', 301);
+	}
+
+	$userCanAccess = $authUser->accessPage($token['payload']['user_data']->role);
+
+	if ( $userCanAccess['result'] === false ) {
+		return $response->withRedirect('/user/unauthorize', 301);
+	}
+
+	return $next($request, $response);
 };
