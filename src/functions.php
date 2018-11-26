@@ -1,7 +1,6 @@
 <?php
 
-use App\Auth\AuthAPI;
-
 function userCan($cap_slug) {
-  $token = (new AuthAPI)->verifyToken();
-}
+  $userApi = new App\User\UserAPI;
+  return $userApi->userCan($cap_slug);
+};

@@ -6,6 +6,7 @@ use Core\Database;
 use Core\JWT;
 use Core\Response;
 use App\Menu\MenuAPI;
+use App\Auth\AuthAPI;
 
 class UserAPI
 {
@@ -14,6 +15,7 @@ class UserAPI
   public function __construct() {
     $this->db = Database::connect();
     $this->menu = new MenuAPI;
+    $this->auth = new AuthAPI;
   }
 
   public function userAuth($user_login, $user_pass) {
@@ -540,7 +542,7 @@ class UserAPI
   }
 
   public function userCan($cap_slug) {
-    $auth = self::verifyToken();
+    $auth = $this->auth->verifyToken();
 
     if ( $auth['result'] === false ) {
       return false;
@@ -549,9 +551,9 @@ class UserAPI
     return Database::hasRows(
       $this->db,
       "SELECT P.id 
-      FROM web_permission P
+      FROM web_permissions P
       LEFT JOIN web_capabilities C
-      ON C.cap_id = P.cap_id
+      ON C.id = P.cap_id
       WHERE C.cap_slug = ?
       AND P.role_id = ?",
       [
