@@ -34,6 +34,7 @@ class MenuAPI
   }
 
   public function createMenu($link, $name) {
+    
     $create = Database::query(
       $this->db,
       "INSERT INTO web_menus(

@@ -37,7 +37,7 @@ class AuthAPI
         FROM web_menus
         WHERE menu_link = ?",
         [
-          trim($currentUrl)
+          str_replace('//', '/', trim($currentUrl)) 
         ]
       );
 
