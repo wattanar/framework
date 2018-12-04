@@ -4,3 +4,4 @@
 .env
 /src/config.php
 composer.lock
+/public/install.php

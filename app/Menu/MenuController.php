@@ -69,7 +69,7 @@ class MenuController
     }
   }
 
-  public function generateMenuHTML() : string {
+  public function generateMenuHTML(): string {
     $roots = $this->menu->generateMenu('root');
 
     $menu = [];
@@ -90,11 +90,11 @@ class MenuController
     return $menu_generated;
   }
 
-  public function getMenuChild($menu) : string {
+  public function getMenuChild($menu): string {
 
   }
 
-  public function generateMenu() : string {
+  public function generateMenu(): string {
     
     $roots = $this->menu->generateMenu('root');
 
@@ -120,7 +120,7 @@ class MenuController
           <b class="caret"></b>
         </a>';
 
-      if (count($m['sub']) !== 0) {
+      if ( count($m['sub']) !== 0 ) {
         
         $menu_generated .= '<ul class="dropdown-menu">';
         
@@ -140,6 +140,7 @@ class MenuController
                 foreach ($sub1['sub'] as $sub2) { 
 
                   $menu_generated .= '<li>';
+
                   if ( count($sub2['sub']) !== 0 ) {
 
                     $menu_generated .= '
@@ -157,31 +158,24 @@ class MenuController
                     }
 
                     $menu_generated .= '</ul>';
-
                   } else {
 
                     $menu_generated .= '<a href="' . $sub2['link'] . '"> ' . $sub2['name'] . ' </a>';
-                  
                   }
                   
                   $menu_generated .= '</li>';
-                  
                 }
                 
                 $menu_generated .= '</ul>';
-
           } else {
             
             $menu_generated .= '<a href="' . $sub1['link'] . '"> ' . $sub1['name'] . ' </a>';
-
           }
           
           $menu_generated .= '</li>';
-
         }
         
         $menu_generated .= '</ul>';
-      
       } else {
 
         $menu_generated .= '
@@ -199,6 +193,7 @@ class MenuController
   }
 
   public function deleteMenu($request, $response, $args) {
+    
     $parsedBody = $request->getParsedBody();
 
     $delete = $this->menu->deleteMenu(

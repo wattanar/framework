@@ -8,12 +8,13 @@ class Database {
 
 	public static function connect($default = true, $connectionInfo = []) {
 		if ($default === false) {
-			return Sqlsrv::connect(
-				$connectionInfo['hostname'], 
-				$connectionInfo['username'], 
-				$connectionInfo['password'], 
-				$connectionInfo['database']
-			);
+
+				return Sqlsrv::connect(
+					$connectionInfo['hostname'], 
+					$connectionInfo['username'], 
+					$connectionInfo['password'], 
+					$connectionInfo['database']
+				);
 		} else {
 			return Sqlsrv::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 		}
