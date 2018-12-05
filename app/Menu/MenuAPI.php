@@ -7,8 +7,6 @@ use App\Auth\AuthAPI;
 
 class MenuAPI
 {
-  private $db = null;
-
   public function __construct() {
     $this->db = Database::connect();
   }
@@ -110,7 +108,7 @@ class MenuAPI
     }
   }
 
-  public function generateMenu(string $type, int $menu_id = 0) : array {
+  public function generateMenu(string $type, int $menu_id = 0): array {
 
     switch ($type) {
       case 'root':

@@ -8,7 +8,7 @@ use Core\JWT;
 use Core\Cookie;
 use Core\Flash;
 use Core\Response;
-use Core\Validate;
+use Core\Helper;
 use App\User\UserAPI;
 use App\Auth\AuthAPI;
 
@@ -364,8 +364,8 @@ class UserController
     $parsedBody = $request->getParsedBody();
 
     $create = $this->user->createUser(
-      Validate::clean($parsedBody['user_login']),
-      Validate::clean($parsedBody['user_password'])
+      Helper::clean($parsedBody['user_login']),
+      Helper::clean($parsedBody['user_password'])
     );
 
     if ($create['result'] === false) {
@@ -385,7 +385,7 @@ class UserController
 
     $parsedBody = $request->getParsedBody();
 
-    if ( Validate::clean($parsedBody['role_id']) === null || $parsedBody['cap_id'] === '') {
+    if ( Helper::clean($parsedBody['role_id']) === null || $parsedBody['cap_id'] === '') {
       return $response->withJson([
         'result' => false,
         'message' => 'Unable to update!'

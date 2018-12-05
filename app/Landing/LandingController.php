@@ -7,8 +7,6 @@ use App\User\UserAPI;
 
 class LandingController
 {
-  private $user = null;
-
   public function __construct() {
     $this->user = new UserAPI;
   }

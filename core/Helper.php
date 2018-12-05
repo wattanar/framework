@@ -2,7 +2,7 @@
 
 namespace Core;
 
-class Validate
+class Helper
 {
   public static function clean($value) {
     return htmlspecialchars(trim($value));

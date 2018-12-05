@@ -69,7 +69,7 @@ class AuthAPI
     }
   }
 
-  public function checkCapByRole($user_role, $cap_slug) {
+  public function checkCapByRole($role_id, $cap_slug) {
     return Database::hasRows(
       $this->db,
       "SELECT 
@@ -81,7 +81,7 @@ class AuthAPI
       AND P.role_id = ?",
       [
         $cap_slug,
-        $user_role
+        $role_id
       ]
     );
   }

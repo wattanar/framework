@@ -3,7 +3,7 @@
 namespace App\Menu;
 
 use Core\Render;
-use Core\Validate;
+use Core\Helper;
 use App\Menu\MenuAPI;
 
 class MenuController 
@@ -26,8 +26,8 @@ class MenuController
     $parsedBody = $request->getParsedBody();
 
     $create = $this->menu->createMenu(
-      Validate::clean($parsedBody['menu_link']),
-      Validate::clean($parsedBody['menu_name'])
+      Helper::clean($parsedBody['menu_link']),
+      Helper::clean($parsedBody['menu_name'])
     );
 
     if ($create['result'] === false) {
@@ -47,13 +47,13 @@ class MenuController
     $parsedBody = $request->getParsedBody();
 
     $update = $this->menu->editMenu(
-      Validate::clean($parsedBody['id']),
-      Validate::clean($parsedBody['menu_link']),
-      Validate::clean($parsedBody['menu_name']),
-      Validate::clean($parsedBody['menu_position']),
-      Validate::clean($parsedBody['menu_parent']),
-      Validate::clean($parsedBody['menu_order']),
-      Validate::clean($parsedBody['menu_status'])
+      Helper::clean($parsedBody['id']),
+      Helper::clean($parsedBody['menu_link']),
+      Helper::clean($parsedBody['menu_name']),
+      Helper::clean($parsedBody['menu_position']),
+      Helper::clean($parsedBody['menu_parent']),
+      Helper::clean($parsedBody['menu_order']),
+      Helper::clean($parsedBody['menu_status'])
     );
 
     if ($update['result'] === false) {
@@ -151,7 +151,6 @@ class MenuController
                     $menu_generated .= '<ul class="dropdown-menu">';
 
                     foreach ($sub2['sub'] as $sub3) { 
-
                       $menu_generated .= '<li>';
                       $menu_generated .= '<a href="' . $sub3['link'] . '"> ' . $sub3['name'] . ' </a>';
                       $menu_generated .= '</li>';
@@ -197,7 +196,7 @@ class MenuController
     $parsedBody = $request->getParsedBody();
 
     $delete = $this->menu->deleteMenu(
-      Validate::clean($parsedBody['id'])
+      Helper::clean($parsedBody['id'])
     );
 
     if ($delete['result'] === false) {
@@ -216,15 +215,15 @@ class MenuController
   public function updateCapabilities($request, $response, $args) {
     
     $parsedBody = $request->getParsedBody();
-    if ( Validate::clean($parsedBody['cap_id']) === null ) {
+    if ( Helper::clean($parsedBody['cap_id']) === null ) {
       return $response->withJson([
         'result' => false,
         'message' => 'Please select capabilities!'
       ]);
     }
     $update = $this->menu->updateCapabilities(
-      Validate::clean($parsedBody['menu_id']),
-      Validate::clean($parsedBody['cap_id'])
+      Helper::clean($parsedBody['menu_id']),
+      Helper::clean($parsedBody['cap_id'])
     );
     if ($update['result'] === false) {
       return $response->withJson([
