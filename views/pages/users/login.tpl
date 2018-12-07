@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/default', ['title' => 'Login']);?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Login']);?>
 
 <?php use Core\Flash; 
 
@@ -6,8 +6,6 @@ $flash_status = Flash::getMessage('status');
 $flash_message = Flash::getMessage('message');?>
 
 <form role="form" id="formLogin" action="/user/auth" method="POST" class="center-360">
-
-	<legend>Login</legend>
 
 	<?php if ($flash_status === 'error'): ?>
 	<div class="alert alert-danger alert-dismissible" role="alert">

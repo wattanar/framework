@@ -3,6 +3,7 @@
 $app->group('/user', function () use ($auth, $container, $app) {
 
   $app->get('/login', 'App\User\UserController:userLogin');
+  $app->get('/register', 'App\User\UserController:userRegister');
   $app->get('/logout', 'App\User\UserController:userLogout')->add($auth);
   $app->post('/auth', 'App\User\UserController:userAuth')->add($container->get('csrf'));
   $app->get('/profile', 'App\User\UserController:userProfile')->add($auth);

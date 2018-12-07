@@ -1,11 +1,8 @@
-<?php $this->layout('layouts/default', ['title' => 'Demo Page']); ?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Demo Page']);
+?>
 
 <div>
-  <legend>This is title!</legend>
-
-  <p>This is content.</p>
-
-  <?php if (userCan('cap_1')) :?> <button>Show Me!</button> <?php endif; ?>
+  <p><?php echo xss(getSidebarMenu()); ?></p>
 </div>
 
 <?php $this->push('scripts') ?>

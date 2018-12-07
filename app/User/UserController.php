@@ -39,11 +39,15 @@ class UserController
     
     $csrf = CSRF::generate();
 
-    return Render::View('/pages/users/change_password', [
+    return Render::View('pages/users/change_password', [
       'name' => $csrf['name'],
 			'value' => $csrf['value'],
 			'key' => $csrf['key']
     ]);
+  }
+
+  public function  userRegister($request, $response, $args) {
+    return Render::View('pages/users/register');
   }
 
   public function userLogin($request, $response, $args) {

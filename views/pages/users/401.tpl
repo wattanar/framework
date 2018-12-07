@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/default', ['title' => 'Unauthorized']); ?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Unauthorized']); ?>
 
 <div style="text-align: center;">
   <p style="font-size: 5em; margin: 0 auto;">401</p>

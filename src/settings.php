@@ -1,5 +1,7 @@
 <?php
 
+header_remove("X-Powered-By");
+
 return [
   'settings' => [
     'debug' => true,

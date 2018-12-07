@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/default', ['title' => 'Change Password']);?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Change Password']);?>
 
 <?php use Core\Flash; 
 
@@ -6,8 +6,6 @@ $flash_status = Flash::getMessage('status');
 $flash_message = Flash::getMessage('message');?>
 
 <form id="formChangePassword" action="/user/change_password" method="post" class="center-360">
-
-  <legend>Change Password</legend>
 
   <?php if ($flash_status === 'error'): ?>
   <div class="alert alert-danger alert-dismissible" role="alert">

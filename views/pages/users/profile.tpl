@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/default', ['title' => 'Profile']);?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Profile']);?>
 
 <?php 
 use Core\Flash;
@@ -10,9 +10,6 @@ $flash_status = Flash::getMessage('status');
 $flash_message = Flash::getMessage('message'); ?>
 
 <form id="formProfile" method="post" action="/user/profile" class="center-360">
-
-  <legend>Profile</legend>
-
   <?php if ($flash_status === 'error'): ?>
   <div class="alert alert-danger alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

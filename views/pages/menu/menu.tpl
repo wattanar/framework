@@ -1,16 +1,27 @@
-<?php $this->layout('layouts/default', ['title' => 'Menu']);?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Menu']);?>
 
-<div>
-  <legend>Menu</legend>
-  <p>
-    <button id="create" class="btn btn-primary">New menu</button>
-    <button id="delete" class="btn btn-danger">Delete menu</button>
-  </p>
-  <p>
-    <div id="grid"></div>
-  </p>
+<!-- Button -->
+<div class="btn-control">
+  <button id="create" class="btn btn-primary">New menu</button>
+  <button id="delete" class="btn btn-danger">Delete menu</button>
+  <button id="update" class="btn btn-default">Update</button>
 </div>
 
+<!-- Table -->
+<table id="grid_menu" class="table table-striped table-bordered" style="width:100%">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Link</th>
+      <th>Name</th>
+      <th>Position</th>
+      <th>Parent</th>
+      <th>Order</th>
+    </tr>
+  </thead>
+</table>
+
+<!-- Dialog -->
 <div id="dialog_create_new" title="New Menu" style="display: none;">
   <form id="formNewMenu">
     <div class="form-group">
@@ -37,7 +48,28 @@
 <script>
   jQuery(document).ready(function ($) {
 
-    grid();
+    loadGrid('#grid_menu', {
+      "processing": true,
+      "serverSide": false,
+      "deferRender": true,
+      "ajax": "/api/v1/menu",
+      "columns": [
+        { data: "id", width: "30px" },
+        { data: "menu_link", width: "100px"},
+        { data: "menu_name" },
+        { data: "menu_position" },
+        { data: "menu_parent" },
+        { data: "menu_order" }
+      ],
+      "columnDefs": [
+        renderColumn({
+          type: 'text',
+          name: 'menu_link'
+        }, 1)
+      ]
+    });
+
+    singleSelect('#grid_menu');
 
     $('#create').on('click', function () {
       $('#dialog_create_new').dialog({
@@ -54,7 +86,7 @@
               if (data.result === true) {
                 $('#dialog_create_new').dialog('close');
                 $('#formNewMenu').trigger('reset');
-                $('#grid').jqxGrid('updatebounddata');
+                reloadGrid('#grid_menu');
               } else {
                 $('#formNewMenu').trigger('reset');
                 alert(data.message);
@@ -84,6 +116,9 @@
       }
     });
 
+    $('#update').on('click', function() {
+      console.log(rowSelected('#grid_menu')[0]);
+    });
   });
 
   function grid() {

@@ -1,0 +1,10 @@
+<script src="/assets/js/jquery-1.12.4.min.js"></script>
+<script src="/assets/AdminLTE-2.4.5/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/assets/AdminLTE-2.4.5/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="/assets/AdminLTE-2.4.5/dist/js/adminlte.min.js"></script>
+<script src="/assets/AdminLTE-2.4.5/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+<script src="/assets/AdminLTE-2.4.5/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/assets/DataTables/datatables.min.js"></script>
+<script src="/assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/datatables.js"></script>

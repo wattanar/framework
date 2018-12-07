@@ -1,3 +1,4 @@
+// @ts-nocheck
 function __http(__type, __url, __data = {}, __datatype = 'json') {
   // @ts-ignore
   return $.ajax({
