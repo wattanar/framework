@@ -1,3 +1,3 @@
 <?php
 
-$app->get('/', 'App\Landing\LandingController:demo');
+$app->get('/', 'App\Landing\LandingController:demo')->add($auth);

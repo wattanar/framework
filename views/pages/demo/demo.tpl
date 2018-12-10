@@ -2,7 +2,7 @@
 ?>
 
 <div>
-  <p><?php echo xss(getSidebarMenu()); ?></p>
+  <h1>Hello World!</h1>
 </div>
 
 <?php $this->push('scripts') ?>

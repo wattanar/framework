@@ -19,7 +19,8 @@ class MenuController
   }
 
   public function getMenu($request, $response, $args) {
-    return $response->withJson(["data" => $this->menu->getMenu()]);
+    
+    return $response->withJson(["data" => $this->menu->getMenu(), "q" => $request->getQueryParams()]);
   }
 
   public function createMenu($request, $response, $args) {

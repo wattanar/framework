@@ -312,7 +312,7 @@ class UserController
   }
 
   public function getAllUsers($request, $response, $args) {
-    return $response->withJson($this->user->getAllUsers());
+    return $response->withJson(["data" => $this->user->getAllUsers()]);
   }
 
   public function editUsers($request, $response, $args) {

@@ -363,12 +363,6 @@ class UserAPI
 
   public function editUsers($id, $user_email, $user_status, $user_firstname, $user_lastname) {
 
-    if ($user_status === 'true') {
-      $s = 1;
-    } else {
-      $s = 0;
-    }
-
     $update = Database::query(
       $this->db,
       "UPDATE web_users
@@ -379,7 +373,7 @@ class UserAPI
       WHERE id = ?",
       [
         $user_email,
-        $s,
+        $user_status,
         $user_firstname,
         $user_lastname,
         $id

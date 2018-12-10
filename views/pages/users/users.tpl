@@ -1,56 +1,128 @@
-<?php $this->layout('layouts/default', ['title' => 'Users']);?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Users']);?>
 
-<div>
-  <legend>Users</legend>
+<div class="btn-control">
+  <button class="btn btn-primary" id="new_user">Create new</button>
+</div>
 
-  <p>
-    <button class="btn btn-primary" id="new_user">Create new</button>
-  </p>
-  <p>
-    <div id="grid"></div>
-  </p>
+<table id="grid_user" class="table table-striped table-bordered" style="width:100%">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Register Date</th>
+      <th>Firstname</th>
+      <th>Lastname</th>
+      <th>Role</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+</table>
 
-  <div id="dialog_create_new" title="New user" style="display: none;">
-    <form id="formNewUser">
-      <div class="form-group">
-        <label for="user_login">Username</label>
-        <input type="text" name="user_login" id="user_login" class="form-control" autofocus autocomplete="off" required>
-      </div>
-      <div class="form-group">
-        <label for="user_password">Password</label>
-        <input type="password" name="user_password" id="user_password" class="form-control" required>
-      </div>
-    </form>
-  </div>
+<div id="dialog_create_new" title="New user" style="display: none;">
+  <form id="formNewUser">
+    <div class="form-group">
+      <label for="user_login">Username</label>
+      <input type="text" name="user_login" id="user_login" class="form-control" autofocus autocomplete="off" required>
+    </div>
+    <div class="form-group">
+      <label for="user_password">Password</label>
+      <input type="password" name="user_password" id="user_password" class="form-control" required>
+    </div>
+  </form>
+</div>
 
-  <!-- Edit role -->
-  <div id="dialog_edit_role" title="Edit role" style="display: none;">
-    <form id="formEditRole">
-      <div class="form-group">
-        <label for="select_role">Roles</label>
-        <select name="select_role" id="select_role" class="form-control">
-          <option value="">-- Select --</option>
-        </select>
-      </div>
-    </form>
-  </div>
+<!-- Edit role -->
+<div id="dialog_edit_role" title="Edit role" style="display: none;">
+  <form id="formEditRole">
+    <div class="form-group">
+      <label for="select_role">Roles</label>
+      <select name="select_role" id="select_role" class="form-control">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
+  </form>
+</div>
 
-  <!-- reset password -->
-  <div id="dialog_reset_password" title="Reset Password" style="display: none;">
-    <form id="formResetPassword">
-      <div class="form-group">
-        <label for="reset_password">New Password</label>
-        <input type="password" name="reset_password" id="reset_password" class="form-control" required>
-      </div>
-    </form>
-  </div>
+<!-- reset password -->
+<div id="dialog_reset_password" title="Reset Password" style="display: none;">
+  <form id="formResetPassword">
+    <div class="form-group">
+      <label for="reset_password">New Password</label>
+      <input type="password" name="reset_password" id="reset_password" class="form-control" required>
+    </div>
+  </form>
 </div>
 
 <?php $this->push('scripts') ?>
 <script>
   jQuery(document).ready(function ($) {
+    
+    loadGrid('#grid_user', {
+      processing: true,
+      serverSide: false,
+      deferRender: true,
+      searching: true,
+      modeSelect: "single",
+      ajax: "/api/v1/users",
+      columns: [
+        { data: "user_login"},
+        { data: 'user_email'},
+        { data: "user_registered"},
+        { data: "user_firstname"},
+        { data: "user_lastname"},
+        { data: 'user_role'},
+        { data: 'user_status'}
+      ],
+      columnDefs: [
+        {
+          render: function(data, type, row) {
+            var t = ['Active', 'Deactived'];
+            if (data === 1) {
+              return setLabelColor(t[0], 'success');
+            } else {
+              return setLabelColor(t[1], 'danger');
+            }
+          },
+          targets: 6
+        }
+      ]
+    });
 
-    grid();
+    editableGrid('#grid_user', {
+      onUpdate: function (updatedCell, updatedRow, oldValue) {
+
+        var rowdata = updatedRow.data()
+        
+        call_ajax('post', '/api/v1/users/edit', {
+          id: rowdata.id,
+          user_email: rowdata.user_email,
+          user_status: rowdata.user_status,
+          user_firstname: rowdata.user_firstname,
+          user_lastname: rowdata.user_lastname
+        }).done(function(data) {
+          if (data.result === false) {
+            alert(data.message);
+          }
+          reloadGrid('#grid_user');
+        });
+      },
+      columns: [1, 3, 4, 6],
+      inputCss:'form-control',
+      confirmationButton: {
+        confirmCss: 'btn btn-sm btn-success',
+        cancelCss: 'btn btn-sm btn-danger'
+      },
+      inputTypes: [
+        {
+          column: 6, 
+          type: "list",
+          options: [
+            { value: 1, display: "Actived" },
+            { value: 0, display: "Deactived" }
+          ]
+        }
+      ]
+    });
 
     $('#new_user').on('click', function () {
 
@@ -70,8 +142,8 @@
               }).done(function (data) {
                 if (data.result === true) {
                   $('#dialog_create_new').dialog('close');
-                  $('#formNewUser').trigger('reset');
-                  $('#grid').jqxGrid('updatebounddata');
+                  $('#formNewUser').trigger('reset');;
+                  reloadGrid('#grid_user');
                 } else {
                   $('#formNewUser').trigger('reset');
                   alert(data.message);

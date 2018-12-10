@@ -1,8 +1,6 @@
-<?php $this->layout('layouts/default', ['title' => 'Capabilities']);?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Capabilities']);?>
 
 <div>
-  <legend>Capabilities</legend>
-
   <p>
     <button class="btn btn-primary" id="new_capabilities">New Capability</button>
     <button class="btn btn-danger" id="delete_capabilities">Delete Capability</button>

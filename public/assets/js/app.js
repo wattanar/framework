@@ -1,11 +1,20 @@
 // @ts-nocheck
 function __http(__type, __url, __data = {}, __datatype = 'json') {
-  // @ts-ignore
   return $.ajax({
     type: __type,
     url: __url,
     data: __data,
     dataType: __datatype,
+    cache: false
+  });
+}
+
+function call_ajax(type, url, data, datatype) {
+  return $.ajax({
+    type: type,
+    url: url,
+    data: data,
+    dataType: datatype,
     cache: false
   });
 }

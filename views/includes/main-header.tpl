@@ -20,7 +20,22 @@
 		<!-- Navbar Right Menu -->
 		<div class="navbar-custom-menu">
 			<ul class="nav navbar-nav">
-				<li><a href="#">Administrator</a></li>
+				<li class="dropdown messages-menu">
+					<ul class="dropdown-menu">
+						<li>
+							<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+								Users
+							</a>
+							<ul class="menu">
+								<li><a href="/user/all">All Users</a></li>
+								<li><a href="/user/roles">Roles</a></li>
+								<li><a href="/user/capabilities">Capabilities</a></li>
+							</ul>
+						</li>
+						<li><a href="/menu">Menus</a></li>
+					</ul>
+				</li>
+
 				<li class="dropdown user user-menu">
 					<!-- Menu Toggle Button -->
 					<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">

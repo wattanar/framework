@@ -4,7 +4,6 @@
 <div class="btn-control">
   <button id="create" class="btn btn-primary">New menu</button>
   <button id="delete" class="btn btn-danger">Delete menu</button>
-  <button id="update" class="btn btn-default">Update</button>
 </div>
 
 <!-- Table -->
@@ -17,6 +16,7 @@
       <th>Position</th>
       <th>Parent</th>
       <th>Order</th>
+      <th>Status</th>
     </tr>
   </thead>
 </table>
@@ -49,27 +49,74 @@
   jQuery(document).ready(function ($) {
 
     loadGrid('#grid_menu', {
-      "processing": true,
-      "serverSide": false,
-      "deferRender": true,
-      "ajax": "/api/v1/menu",
-      "columns": [
-        { data: "id", width: "30px" },
-        { data: "menu_link", width: "100px"},
-        { data: "menu_name" },
-        { data: "menu_position" },
-        { data: "menu_parent" },
-        { data: "menu_order" }
+      processing: true,
+      serverSide: false,
+      deferRender: true,
+      searching: true,
+      responsive: true,
+      modeSelect: "single",
+      ajax: "/api/v1/menu",
+      columns: [
+        { data: "id"},
+        { data: "menu_link"},
+        { data: "menu_name"},
+        { data: "menu_position"},
+        { data: "menu_parent"},
+        { data: "menu_order"},
+        { data: 'menu_status'}
       ],
-      "columnDefs": [
-        renderColumn({
-          type: 'text',
-          name: 'menu_link'
-        }, 1)
+      columnDefs: [
+        {
+          render: function(data, type, row) {
+            var t = ['Active', 'Deactived'];
+            if (data === 1) {
+              return setLabelColor(t[0], 'success');
+            } else {
+              return setLabelColor(t[1], 'danger');
+            }
+          },
+          targets: 6
+        }
       ]
     });
 
-    singleSelect('#grid_menu');
+    editableGrid('#grid_menu', {
+      onUpdate: function (updatedCell, updatedRow, oldValue) {
+
+        var rowdata = updatedRow.data()
+        
+        call_ajax('post', '/api/v1/menu/edit', {
+          id: rowdata.id,
+          menu_link: rowdata.menu_link,
+          menu_name: rowdata.menu_name,
+          menu_position: rowdata.menu_position,
+          menu_parent: rowdata.menu_parent,
+          menu_order: rowdata.menu_order,
+          menu_status: rowdata.menu_status
+        }).done(function(data) {
+          if (data.result === false) {
+            alert(data.message);
+          }
+          reloadGrid('#grid_menu');
+        });
+      },
+      columns: [1, 2, 3, 4, 5, 6],
+      inputCss:'form-control',
+      confirmationButton: {
+        confirmCss: 'btn btn-sm btn-success',
+        cancelCss: 'btn btn-sm btn-danger'
+      },
+      inputTypes: [
+        {
+          column: 6, 
+          type: "list",
+          options: [
+            { value: 1, display: "Actived" },
+            { value: 0, display: "Deactived" }
+          ]
+        }
+      ]
+    });
 
     $('#create').on('click', function () {
       $('#dialog_create_new').dialog({
@@ -99,13 +146,13 @@
 
     $('#delete').on('click', function () {
       if (confirm('Are you sure ?')) {
-        var rowdata = row_selected('#grid');
-        if (typeof rowdata !== 'undefined') {
-          __http('post', '/api/v1/menu/delete', {
+        var rowdata = rowSelected('#grid_menu')[0];
+        if (rowdata.length !== 0) {
+          call_ajax('post', '/api/v1/menu/delete', {
             id: rowdata.id
           }).done(function (data) {
             if (data.result === true) {
-              $('#grid').jqxGrid('updatebounddata');
+              reloadGrid('#grid_menu');
             } else {
               alert(data.message);
             }
@@ -115,81 +162,7 @@
         }
       }
     });
-
-    $('#update').on('click', function() {
-      console.log(rowSelected('#grid_menu')[0]);
-    });
   });
-
-  function grid() {
-    var dataAdapter = new $.jqx.dataAdapter({
-      datatype: 'json',
-      datafields: [
-        { name: 'id', type: 'number' },
-        { name: 'menu_link', type: 'string' },
-        { name: 'menu_name', type: 'string' },
-        { name: 'menu_position', type: 'number' },
-        { name: 'menu_parent', type: 'number' },
-        { name: 'menu_order', type: 'number' },
-        { name: 'menu_status', type: 'bool' },
-        { name: 'cap_id', type: 'number' },
-        { name: 'cap_name', type: 'string' }
-      ],
-      url: '/api/v1/menu',
-      updaterow: function (rowid, rowdata, commit) {
-        __http('post', '/api/v1/menu/edit', {
-          id: rowdata.id,
-          menu_link: rowdata.menu_link,
-          menu_name: rowdata.menu_name,
-          menu_position: rowdata.menu_position,
-          menu_parent: rowdata.menu_parent,
-          menu_order: rowdata.menu_order,
-          menu_status: rowdata.menu_status
-        }).done(function (data) {
-          if (data.result === true) {
-            commit(true);
-          } else {
-            alert(data.message);
-            commit(false);
-          }
-        });
-      }
-    });
-
-    return $("#grid").jqxGrid({
-      width: '100%',
-      source: dataAdapter,
-      autoheight: true,
-      pageSize: 10,
-      altrows: true,
-      pageable: true,
-      sortable: true,
-      filterable: true,
-      showfilterrow: true,
-      columnsresize: true,
-      editable: true,
-      theme: 'default',
-      columns: [
-        { text: 'Menu ID', datafield: 'id', width: 100, editable: false },
-        { text: 'Link', datafield: 'menu_link', width: 150 },
-        { text: 'Name', datafield: 'menu_name', width: 200 },
-        {
-          text: 'Position', datafield: 'menu_position', width: 100, cellsalign: 'center',
-          cellsrenderer: function (row, column, value) {
-            return "<div class='inner-grid'>" + value + "</div>";
-          }
-        },
-        { text: 'Parent', datafield: 'menu_parent', width: 100, cellsalign: 'center' },
-        { text: 'Order', datafield: 'menu_order', width: 100, cellsalign: 'center' },
-        {
-          text: 'Capabilities', datafield: 'cap_name', cellsrenderer: function (row, column, value) {
-            return "<div class='inner-grid'><button class='btn-inner-grid' onclick='return updateCapabilities()'> Update </button> " + value + "</div>";
-          }, width: 200, editable: false
-        },
-        { text: 'Status', datafield: 'menu_status', width: 100, columntype: 'checkbox', filtertype: 'bool' }
-      ]
-    });
-  }
 
   function updateCapabilities() {
     var rowdata = row_selected('#grid');

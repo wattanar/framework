@@ -3,6 +3,8 @@
 <!-- Left side column. contains the logo and sidebar -->
 <aside class="main-sidebar">
 
+
+
 	<!-- sidebar: style can be found in sidebar.less -->
 	<section class="sidebar">
 
@@ -20,6 +22,7 @@
 		<?php endif; ?>
 			
 		<?php if ( $user_data["result"] === true ): ?>
+			<?php	$this->insert("includes/admin-sidebar"); ?>
 			<?php echo getSidebarMenu("Menu"); ?>
 		<?php else: ?>
 		<ul class="sidebar-menu" data-widget="tree"></ul>

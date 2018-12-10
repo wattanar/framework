@@ -14,7 +14,7 @@
     <script src="/assets/js/respond.js"></script>
   <![endif]-->
 </head>
-<body class="hold-transition skin-green sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini">
 	<!-- wrapper -->
 	<div class="wrapper">
 		<?php $this->insert("includes/main-header", ["home_url" => $home_url]); ?>

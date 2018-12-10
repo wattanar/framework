@@ -1,4 +1,8 @@
-.selected {
-  background: #3c8dbc !important;
-  color: black;
+.tb-selected {
+  background:#cccccc !important;
+  color: #000000;
+}
+
+.confirm-edited {
+  text-align: center;
 }

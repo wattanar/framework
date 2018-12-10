@@ -1,8 +1,6 @@
-<?php $this->layout('layouts/default', ['title' => 'Roles']);?>
+<?php $this->layout('layouts/dashboard', ['title' => 'Roles']);?>
 
 <div>
-  <legend>Roles</legend>
-
   <p>
     <button class="btn btn-primary" id="new_roles">New role</button>
     <button class="btn btn-danger" id="delete_roles">Delete role</button>

@@ -12,6 +12,7 @@ class MenuAPI
   }
 
   public function getMenu() {
+
     return Database::rows(
       $this->db,
       "SELECT 
@@ -68,11 +69,11 @@ class MenuAPI
 
   public function editMenu($id, $link, $name, $position, $parent, $order, $status) {
 
-    if ($status === 'true') {
-      $s_ = 1;
-    } else {
-      $s_ = 0;
-    }
+    // if ($status === 'true') {
+    //   $s_ = 1;
+    // } else {
+    //   $s_ = 0;
+    // }
 
     $update = Database::query(
       $this->db,
@@ -90,7 +91,7 @@ class MenuAPI
         $position,
         $parent,
         $order,
-        $s_,
+        $status,
         $id
       ]
     );

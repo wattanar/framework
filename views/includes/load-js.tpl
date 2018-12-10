@@ -6,5 +6,6 @@
 <script src="/assets/AdminLTE-2.4.5/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <script src="/assets/DataTables/datatables.min.js"></script>
 <script src="/assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script src="/assets/CellEdit/js/dataTables.cellEdit.js"></script>
 <script src="/assets/js/app.js"></script>
 <script src="/assets/js/datatables.js"></script>
